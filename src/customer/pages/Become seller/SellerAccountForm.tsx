@@ -1,0 +1,91 @@
+import { Button, Step, StepLabel, Stepper } from "@mui/material";
+import React, { useState } from "react";
+import { useFormik } from "formik";  
+import BecomeSellerFormStep1 from "./BecomeSellerFormStep1";
+
+const steps = ["Tax Details & Mobile", "Pickup Address", "Bank Details", "Supplier details"];
+
+const SellerAccountForm = () => {
+    const [activeStep, setActiveStep] = useState(0);
+
+    const handleStep = (value: number) => () => {
+        (activeStep < steps.length - 1 || (activeStep > 0 && value === -1)) && setActiveStep(activeStep + value);
+        activeStep === steps.length - 1 && handleCreateAccount();
+        console.log("active step", activeStep);
+    };
+
+    const handleCreateAccount = () => {
+        console.log("Create account");
+    };
+
+    const formik = useFormik({
+        initialValues: {
+            mobile: "",
+            otp: "",
+            gstin: "",
+            pickupAddress: {
+                name: "",
+                mobile: "",
+                pincode: "",
+                address: "",
+                locality: "",
+                city: "",
+                state: ""
+            },
+            bankDetails: {
+                accountNumber: "",
+                ifscCode: "",
+                accountHolderName: ""
+            },
+            sellerName: "",
+            email: "",
+            businessDetails: {
+                businessName: "",
+                businessEmail: "",
+                businessMobile: "",
+                logo: "",
+                banner: "",
+                businessAddress: ""
+            },
+            password: ""
+        },
+        onSubmit: values => {
+            console.log("Form submitted", values);
+        }
+        // validationSchema: FormSchema
+    });
+
+    return (
+        <div>
+            <Stepper activeStep={activeStep} alternativeLabel>
+                {steps.map((label, index) => (
+                    <Step key={index}>
+                        <StepLabel>{label}</StepLabel>
+                    </Step>
+                ))}
+            </Stepper>
+            <section>
+                {activeStep === 0 ? <BecomeSellerFormStep1 formik={formik} /> : ""}
+            </section>
+            <section>
+                <div className="flex items-center justify-between">
+                    <Button
+                        onClick={handleStep(-1)}
+                        variant="contained"
+                        disabled={activeStep === 0}
+                    >
+                        Back
+                    </Button>
+                    <Button
+                        onClick={handleStep(1)}
+                        variant="contained"
+                    >
+                        {activeStep === (steps.length - 1) ? "Create Account" : "Continue"}
+                    </Button>
+                </div>
+            </section>
+        </div>
+    );
+};
+
+export default SellerAccountForm;
