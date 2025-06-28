@@ -11,6 +11,8 @@ import Cart from './customer/pages/Cart/Cart';
 import Checkout from './customer/pages/Checkout/Checkout';
 import Account from './customer/pages/Account/Account';
 import BecomeSeller from './customer/pages/Become seller/BecomeSeller';
+import SellerDashboard from './seller/pages/SellerDashboard/SellerDashboard';
+import AdminDashboard from './admin/Pages/Dashboard/AdminDashboard'
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
           <Route path='/cart' element={<Cart/>}/>
           <Route path='/checkout' element={<Checkout/>}/>
           <Route path='/become-seller' element={<BecomeSeller/>}/>
+          <Route path='/seller/*' element={<SellerDashboard/>}/>
+          <Route path='/admin/*' element={<AdminDashboard />}/>
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
