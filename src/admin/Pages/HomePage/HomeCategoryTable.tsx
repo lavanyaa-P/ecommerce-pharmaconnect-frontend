@@ -7,6 +7,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { Button } from '@mui/material';
+import { Edit } from '@mui/icons-material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -46,16 +48,16 @@ const rows = [
     createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 
-export default function OrderTable() {
+export default function HomeCategoryTable() {
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
                     <TableRow>
-                        <StyledTableCell>Order Id</StyledTableCell>
-                        <StyledTableCell>Products</StyledTableCell>
-                        <StyledTableCell>Shipping Address</StyledTableCell>
-                        <StyledTableCell>Order Status</StyledTableCell>
+                        <StyledTableCell>No</StyledTableCell>
+                        <StyledTableCell>Id</StyledTableCell>
+                        <StyledTableCell>image</StyledTableCell>
+                        <StyledTableCell>Category</StyledTableCell>
                         <StyledTableCell>Update</StyledTableCell>
                     </TableRow>
                 </TableHead>
@@ -66,9 +68,13 @@ export default function OrderTable() {
                                 {row.name}
                             </StyledTableCell>
                             <StyledTableCell>{row.calories}</StyledTableCell>
-                            <StyledTableCell align="right">{row.fat}</StyledTableCell>
+                            <StyledTableCell>{row.fat}</StyledTableCell>
                             <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                            <StyledTableCell align="right">{row.protein}</StyledTableCell>
+                            <StyledTableCell align="right">
+                                <Button>
+                                    <Edit/>
+                                </Button>
+                                </StyledTableCell>
                         </StyledTableRow>
                     ))}
                 </TableBody>
@@ -76,4 +82,3 @@ export default function OrderTable() {
         </TableContainer>
     );
 }
-
