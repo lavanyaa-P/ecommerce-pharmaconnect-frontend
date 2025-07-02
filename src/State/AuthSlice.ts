@@ -1,33 +1,60 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { api } from "../config/api";
 
-// Define the shape of your auth state
+// ✅ Thunk for sending OTP
+export const sendLoginSignupOtp = createAsyncThunk(
+  "auth/sendOtp",
+  async ({ email }: { email: string }, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/auth/sent/login-signup-otp", {
+        email,
+        role: "ROLE_SELLER", // 👈 Very important
+      });
+      console.log("OTP sent response:", response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error sending OTP:", error);
+      return rejectWithValue(error.response?.data || "Unknown error");
+    }
+  }
+);
+
+// ✅ Auth slice state type
 interface AuthState {
-  email: string;
   otpSent: boolean;
-  isAuthenticated: boolean;
+  loading: boolean;
+  error: string | null;
 }
 
-// Initial state
+// ✅ Initial state
 const initialState: AuthState = {
-  email: "",
   otpSent: false,
-  isAuthenticated: false,
+  loading: false,
+  error: null,
 };
 
+// ✅ Slice
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {
-    sendLoginSignupOtp: (state, action: PayloadAction<{ email: string }>) => {
-      state.email = action.payload.email;
-      state.otpSent = true;
-    },
-    signin: (state, action: PayloadAction<{ email: string; otp: string }>) => {
-      // You can add real auth logic later
-      state.isAuthenticated = true;
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(sendLoginSignupOtp.pending, (state) => {
+        state.loading = true;
+        state.otpSent = false;
+        state.error = null;
+      })
+      .addCase(sendLoginSignupOtp.fulfilled, (state) => {
+        state.loading = false;
+        state.otpSent = true;
+      })
+      .addCase(sendLoginSignupOtp.rejected, (state, action) => {
+        state.loading = false;
+        state.otpSent = false;
+        state.error = action.payload as string;
+      });
   },
 });
 
-export const { sendLoginSignupOtp, signin } = authSlice.actions;
 export default authSlice.reducer;
