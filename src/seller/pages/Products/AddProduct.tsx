@@ -16,17 +16,16 @@ import { uploadToCoudinary } from "../../../Util/uploadToCoudinary";
 
 // CATEGORY IMPORTS
 import { mainCategory } from "../../../data/category/mainCategory";
-import { babyMotherCareLevelTwo } from "../../../data/category/level two/babyMotherCareLevelTwo";
 import { babyMotherCareLevelThree } from "../../../data/category/level three/babyMotherCareLevelThree";
-import { healthcareProductsLevelTwo } from "../../../data/category/level two/healthcareProductsLevelTwo";
 import { healthcareLevelThree } from "../../../data/category/level three/healthcareLevelThree";
-import { personalCareLevelTwo } from "../../../data/category/level two/personalCareLevelTwo";
 import { personalCareLevelThree } from "../../../data/category/level three/personalCareLevelThree";
-import { wellnessNutritionLevelTwo } from "../../../data/category/level two/wellnessNutritionLevelTwo";
 import { wellnessNutritionLevelThree } from "../../../data/category/level three/wellnessNutritionLevelThree";
+import { useAppDispatch } from "../../../State/Store";
+import { createProduct } from "../../../State/seller/sellerProductSlice";
 
 const AddProduct = () => {
     const [uploading, setUploading] = useState(false);
+    const dispatch = useAppDispatch();
 
     const formik = useFormik({
         initialValues: {
@@ -42,6 +41,18 @@ const AddProduct = () => {
         },
         onSubmit: (values) => {
             console.log("Form Submitted:", values);
+            dispatch(
+                createProduct({
+                    request: values,
+                    jwt: localStorage.getItem("jwt"),
+                })
+            )
+                .then((res) => {
+                    console.log("Product created successfully:", res);
+                })
+                .catch((err) => {
+                    console.error("Product creation failed:", err);
+                });
         },
     });
 
@@ -61,43 +72,24 @@ const AddProduct = () => {
         formik.setFieldValue("images", updatedImages);
     };
 
-    // Dynamic level 2 options
     const getLevelTwoOptions = () => {
-        switch (formik.values.category) {
-            case "babyMotherCare":
-                return babyMotherCareLevelTwo;
-            case "healthcare":
-                return healthcareProductsLevelTwo;
-            case "personalCare":
-                return personalCareLevelTwo;
-            case "wellnessNutrition":
-                return wellnessNutritionLevelTwo;
-            default:
-                return [];
-        }
+        const selectedMain = mainCategory.find(cat => cat.categoryId === formik.values.category);
+        return selectedMain ? selectedMain.levelTwoCategory : [];
     };
 
-    // Dynamic level 3 options
     const getLevelThreeOptions = () => {
-        let allOptions = [];
         switch (formik.values.category) {
-            case "babyMotherCare":
-                allOptions = babyMotherCareLevelThree;
-                break;
-            case "healthcare":
-                allOptions = healthcareLevelThree;
-                break;
-            case "personalCare":
-                allOptions = personalCareLevelThree;
-                break;
-            case "wellnessNutrition":
-                allOptions = wellnessNutritionLevelThree;
-                break;
+            case "baby_mother_care":
+                return babyMotherCareLevelThree.filter(item => item.parentCategoryId === formik.values.subCategory);
+            case "healthcare_products":
+                return healthcareLevelThree.filter(item => item.parentCategoryId === formik.values.subCategory);
+            case "personal_care":
+                return personalCareLevelThree.filter(item => item.parentCategoryId === formik.values.subCategory);
+            case "wellness_nutrition":
+                return wellnessNutritionLevelThree.filter(item => item.parentCategoryId === formik.values.subCategory);
             default:
                 return [];
         }
-        // Filter level 3 based on selected subCategory
-        return allOptions.filter(item => item.parentCategoryId === formik.values.subCategory);
     };
 
     return (
@@ -195,7 +187,20 @@ const AddProduct = () => {
                     />
                 </Grid>
 
-                {/* Level 1 - Main Category */}
+                {/* Quantity */}
+                <Grid item xs={12} md={4}>
+                    <TextField
+                        fullWidth
+                        id="quantity"
+                        name="quantity"
+                        label="Quantity"
+                        type="number"
+                        value={formik.values.quantity}
+                        onChange={formik.handleChange}
+                    />
+                </Grid>
+
+                {/* Main Category */}
                 <Grid item xs={12} md={4}>
                     <FormControl fullWidth required>
                         <InputLabel id="category-label">Category</InputLabel>
@@ -205,7 +210,8 @@ const AddProduct = () => {
                             name="category"
                             value={formik.values.category}
                             onChange={(e) => {
-                                formik.handleChange(e);
+                                const value = e.target.value;
+                                formik.setFieldValue("category", value);
                                 formik.setFieldValue("subCategory", "");
                                 formik.setFieldValue("subSubCategory", "");
                             }}
@@ -213,13 +219,15 @@ const AddProduct = () => {
                         >
                             <MenuItem value=""><em>None</em></MenuItem>
                             {mainCategory.map((item) => (
-                                <MenuItem key={item.categoryId} value={item.categoryId}>{item.name}</MenuItem>
+                                <MenuItem key={item.categoryId} value={item.categoryId}>
+                                    {item.name}
+                                </MenuItem>
                             ))}
                         </Select>
                     </FormControl>
                 </Grid>
 
-                {/* Level 2 - Sub Category */}
+                {/* Sub Category */}
                 <Grid item xs={12} md={6}>
                     <FormControl fullWidth required disabled={!formik.values.category}>
                         <InputLabel id="subCategory-label">Sub Category</InputLabel>
@@ -229,20 +237,23 @@ const AddProduct = () => {
                             name="subCategory"
                             value={formik.values.subCategory}
                             onChange={(e) => {
-                                formik.handleChange(e);
+                                const value = e.target.value;
+                                formik.setFieldValue("subCategory", value);
                                 formik.setFieldValue("subSubCategory", "");
                             }}
                             label="Sub Category"
                         >
                             <MenuItem value=""><em>None</em></MenuItem>
                             {getLevelTwoOptions().map((sub) => (
-                                <MenuItem key={sub.categoryId} value={sub.categoryId}>{sub.name}</MenuItem>
+                                <MenuItem key={sub.categoryId} value={sub.categoryId}>
+                                    {sub.name}
+                                </MenuItem>
                             ))}
                         </Select>
                     </FormControl>
                 </Grid>
 
-                {/* Level 3 - Sub Sub Category */}
+                {/* Sub Sub Category */}
                 <Grid item xs={12} md={6}>
                     <FormControl fullWidth required disabled={!formik.values.subCategory}>
                         <InputLabel id="subSubCategory-label">Sub Sub Category</InputLabel>
@@ -251,15 +262,38 @@ const AddProduct = () => {
                             id="subSubCategory"
                             name="subSubCategory"
                             value={formik.values.subSubCategory}
-                            onChange={formik.handleChange}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                formik.setFieldValue("subSubCategory", value);
+                            }}
                             label="Sub Sub Category"
                         >
                             <MenuItem value=""><em>None</em></MenuItem>
                             {getLevelThreeOptions().map((sub3) => (
-                                <MenuItem key={sub3.categoryId} value={sub3.categoryId}>{sub3.name}</MenuItem>
+                                <MenuItem key={sub3.categoryId} value={sub3.categoryId}>
+                                    {sub3.name}
+                                </MenuItem>
                             ))}
                         </Select>
                     </FormControl>
+                </Grid>
+
+                {/* ✅ Add Product Button */}
+                <Grid item xs={12}>
+                    <button
+                        type="submit"
+                        style={{
+                            backgroundColor: "#003399",
+                            color: "white",
+                            padding: "10px 20px",
+                            borderRadius: "6px",
+                            fontWeight: "600",
+                            border: "none",
+                            cursor: "pointer",
+                        }}
+                    >
+                        Add Product
+                    </button>
                 </Grid>
             </Grid>
         </form>

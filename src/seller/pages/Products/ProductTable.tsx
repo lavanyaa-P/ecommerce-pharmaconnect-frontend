@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,6 +7,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { useAppDispatch, useAppSelector } from '../../../State/Store';
+import { fetchSellerProduct } from '../../../State/seller/sellerProductSlice';
+import { Product } from '../../../types/ProductTypes';
+import { Button, IconButton } from '@mui/material';
+import { Edit } from '@mui/icons-material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -47,6 +52,14 @@ const rows = [
 ];
 
 export default function ProductTable() {
+
+    const dispatch = useAppDispatch();
+    const { sellerProduct } = useAppSelector(store => store);
+
+    React.useEffect(() => {
+        dispatch(fetchSellerProduct(localStorage.getItem('jwt')))
+    }, [])
+
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -61,16 +74,35 @@ export default function ProductTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
-                        <StyledTableRow key={row.name}>
-                            <StyledTableCell component="th" scope="row">
-                                {row.name}
+                    {sellerProduct.products.map((item: Product) => (
+                        <StyledTableRow key={item.id}>
+                            <StyledTableCell align="center">
+                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                    {item.images.map((image, index) => (
+                                        <img
+                                            key={index}
+                                            src="http://localhost:5454/images/${image}"
+                                            alt="product"
+                                            style={{ width: 60, height: 60, objectFit: "cover" }}
+                                        />
+                                    ))}
+                                </div>
                             </StyledTableCell>
-                            <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                            <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                            <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                            <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                            <StyledTableCell align="right">{row.carbs}</StyledTableCell>
+
+
+                            <StyledTableCell align="right">{ item.title }</StyledTableCell>
+                            <StyledTableCell align="right">{ item.mrpPrice }</StyledTableCell>
+                            <StyledTableCell align="right">{ item.sellingPrice }</StyledTableCell>
+                            <StyledTableCell align="right">{ 
+                            <Button size='small'>
+                                In_Stock
+                            </Button>
+                            }</StyledTableCell>
+                            <StyledTableCell align="right">{ 
+                            <IconButton>
+                                <Edit/>
+                            </IconButton>
+                            }</StyledTableCell>
                         </StyledTableRow>
                     ))}
                 </TableBody>
