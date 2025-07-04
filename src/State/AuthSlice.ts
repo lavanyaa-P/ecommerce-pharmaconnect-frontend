@@ -33,6 +33,21 @@ const initialState: AuthState = {
   error: null,
 };
 
+// ✅ Logout thunk
+export const logout = createAsyncThunk<any,any>(
+  "/auth/logout",
+  async (navigate, { rejectWithValue }) => {
+    try {
+      localStorage.clear();
+      console.log("logout success");
+      navigate("/")
+    } catch (error) {
+      console.log("error--- ", error);
+      return rejectWithValue("Logout failed");
+    }
+  }
+);
+
 // ✅ Slice
 const authSlice = createSlice({
   name: "auth",
@@ -53,6 +68,11 @@ const authSlice = createSlice({
         state.loading = false;
         state.otpSent = false;
         state.error = action.payload as string;
+      })
+      .addCase(logout.fulfilled, (state) => {
+        state.otpSent = false;
+        state.loading = false;
+        state.error = null;
       });
   },
 });

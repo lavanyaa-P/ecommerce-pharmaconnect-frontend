@@ -15,9 +15,30 @@ import {
 } from '@mui/icons-material';
 import SimilarProduct from './SimilarProduct';
 import ReviewCart from '../Review/ReviewCart';
+import { useAppDispatch } from '../../../State/Store';
+import { useParams } from 'react-router-dom';
+import { productList } from '../Product/Product';
 
 const ProductDetails = () => {
     const [quantity, setQuantity] = React.useState(1);
+    const [selectedImage, setSelectedImage] = React.useState<string | null>(null);
+
+    const dispatch = useAppDispatch();
+    const { productId } = useParams();
+
+    const product = productList.find(
+        (item) => item.id?.toString() === productId
+    );
+
+    React.useEffect(() => {
+        if (product && product.images.length > 0) {
+            setSelectedImage(product.images[0]);
+        }
+    }, [product]);
+
+    if (!product) {
+        return <div className="text-center text-red-500 py-10">Product not found</div>;
+    }
 
     return (
         <div className='px-5 lg:px-20 pt-10'>
@@ -26,19 +47,20 @@ const ProductDetails = () => {
                 {/* 🖼️ LEFT SIDE: Image Gallery */}
                 <section className='flex flex-col lg:flex-row gap-5'>
                     <div className='w-full lg:w-[20%] flex flex-wrap lg:flex-col gap-2'>
-                        {[1, 1, 1, 1].map((item, index) => (
+                        {product.images.map((img, index) => (
                             <img
                                 key={index}
-                                className='lg:w-full w-[125px] h-[125px] object-cover cursor-pointer rounded-md'
-                                src='https://www.netmeds.com/images/product-v1/600x600/902225/sahyog_wellness_digital_thermometer_2_0.jpg'
+                                className={`lg:w-full w-[125px] h-[125px] object-cover cursor-pointer rounded-md border-2 ${selectedImage === img ? "border-blue-500" : "border-transparent"}`}
+                                src={img}
                                 alt={`Thumbnail ${index + 1}`}
+                                onClick={() => setSelectedImage(img)}
                             />
                         ))}
                     </div>
                     <div className='w-full lg:w-[80%]'>
                         <img
                             className='w-full max-h-[500px] object-contain rounded-md'
-                            src='https://www.netmeds.com/images/product-v1/600x600/902225/sahyog_wellness_digital_thermometer_0_0.jpg'
+                            src={selectedImage ?? product.images[0]}
                             alt='Main Product'
                         />
                     </div>
@@ -46,8 +68,12 @@ const ProductDetails = () => {
 
                 {/* 📝 RIGHT SIDE: Product Details */}
                 <section className='space-y-5'>
-                    <h1 className='font-bold text-lg text-primary-color'>Omron</h1>
-                    <p className='text-gray-500 font-semibold'>Health Monitors</p>
+                    <h1 className='font-bold text-lg text-primary-color'>
+                        {product.title ?? product.name}
+                    </h1>
+                    <p className='text-gray-500 font-semibold'>
+                        {product.description}
+                    </p>
 
                     <div className='flex justify-between items-center py-2 border w-[180px] px-3 mt-5'>
                         <div className='flex gap-1 items-center'>
@@ -60,11 +86,11 @@ const ProductDetails = () => {
 
                     <div>
                         <div className="price flex items-center gap-3 mt-5 text-2xl">
-                            <span className="font-sans text-gray-800">₹ 273</span>
-                            <span className="line-through text-gray-400">₹ 390</span>
-                            <span className="text-primary-color font-semibold">30%</span>
+                            <span className="font-sans text-gray-800">₹ {product.price}</span>
+                            <span className="line-through text-gray-400">₹ {product.originalPrice}</span>
+                            <span className="text-primary-color font-semibold">{product.discount}</span>
                         </div>
-                        <p className='text-sm'>Inclusive of all taxes. Free Shipping above ₹273.</p>
+                        <p className='text-sm'>Inclusive of all taxes. Free Shipping above ₹{product.price}.</p>
                     </div>
 
                     <div className='mt-7 space-y-3'>
@@ -116,11 +142,10 @@ const ProductDetails = () => {
                     </div>
 
                     <div className='mt-12 space-y-5'>
-                        <ReviewCart/>
-                        <Divider/>
+                        <ReviewCart />
+                        <Divider />
                     </div>
                 </section>
-
             </div>
 
             <div className='mt-20'>
@@ -129,7 +154,6 @@ const ProductDetails = () => {
                     <SimilarProduct />
                 </div>
             </div>
-
         </div>
     );
 };
