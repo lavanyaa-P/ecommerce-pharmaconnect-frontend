@@ -18,6 +18,7 @@ import AdminDashboard from './admin/Pages/Dashboard/AdminDashboard';
 
 import { fetchSellerProfile } from './State/seller/sellerSlice';
 import { useAppDispatch, useAppSelector } from './State/Store';
+import Auth from './customer/pages/Auth/Auth';
 
 // ✅ Component that uses useNavigate (must be inside <BrowserRouter>)
 const AppContent = () => {
@@ -43,6 +44,7 @@ const AppContent = () => {
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
+        <Route path='/login' element={<Auth />} />
         <Route path='/products/:category' element={<Product />} />
         <Route path='/reviews/:productId' element={<Review />} />
         <Route path='/product-details/:categoryId/:name/:productId' element={<ProductDetails />} />

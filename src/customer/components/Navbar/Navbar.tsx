@@ -74,7 +74,7 @@ const Navbar = () => {
                             <SearchIcon />
                         </IconButton>
 
-                        {true ? (
+                        {false ? (
                             <Button
                                 onClick={() => navigate("/account/orders")}
                                 className="flex items-center gap-2"
@@ -86,7 +86,7 @@ const Navbar = () => {
                                 <h1 className="font-semibold hidden lg:block">Pharma</h1>
                             </Button>
                         ) : (
-                            <Button variant="contained">Login</Button>
+                            <Button  onClick={()=>navigate("/login")} variant="contained">Login</Button>
                         )}
 
                         <IconButton>

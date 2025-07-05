@@ -4,12 +4,15 @@ import { api } from "../config/api";
 // ✅ Thunk for sending OTP
 export const sendLoginSignupOtp = createAsyncThunk(
   "auth/sendOtp",
-  async ({ email }: { email: string }, { rejectWithValue }) => {
+  async (
+    { email, role }: { email: string; role?: string }, // 👈 role is optional
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await api.post("/auth/sent/login-signup-otp", {
-        email,
-        role: "ROLE_SELLER", // 👈 Very important
-      });
+      const payload: any = { email };
+      if (role) payload.role = role;
+
+      const response = await api.post("/auth/sent/login-signup-otp", payload);
       console.log("OTP sent response:", response.data);
       return response.data;
     } catch (error: any) {
@@ -18,6 +21,20 @@ export const sendLoginSignupOtp = createAsyncThunk(
     }
   }
 );
+
+
+export const signin=createAsyncThunk<any,any>("auth/signin",
+  async(loginRequest, {rejectWithValue})=>{
+    try{
+      const response=await api.post("/auth/signing",loginRequest)
+      console.log("login otp ",response.data)
+    }catch(error){
+      console.log("error ----- ",error);
+    }
+  }
+)
+
+
 
 // ✅ Auth slice state type
 interface AuthState {

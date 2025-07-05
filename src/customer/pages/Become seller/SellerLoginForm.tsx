@@ -24,7 +24,7 @@ const SellerLoginForm = () => {
 
   const handleSendOtp = () => {
     console.log("Sending OTP to:", formik.values.email);
-    dispatch(sendLoginSignupOtp({ email: formik.values.email }));
+    dispatch(sendLoginSignupOtp({ email: formik.values.email, role: "ROLE_SELLER" }));
   };
 
   return (
