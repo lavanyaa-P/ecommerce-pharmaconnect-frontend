@@ -1,14 +1,16 @@
 import { useFormik } from 'formik';
-import React from 'react'
+import React, { useState } from 'react'
 
-import { useAppDispatch } from '../../../State/Store';
-import { Button, TextField } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../../../State/Store';
+import { Button, CircularProgress, TextField } from '@mui/material';
 import { sendLoginSignupOtp } from '../../../State/AuthSlice';
-import {signin} from '../../../State/AuthSlice'
+import { signin } from '../../../State/AuthSlice'
 
 const LoginForm = () => {
 
+
     const dispatch = useAppDispatch();
+    const auth = useAppSelector(store => store.auth);
 
     const formik = useFormik({
         initialValues: {
@@ -51,7 +53,7 @@ const LoginForm = () => {
                     <p>Live Debug Email: {formik.values.email}</p> {/* 🧪 Live Debug */}
                 </div>
 
-                {true && (
+                {auth.otpSent && (
                     <div className="space-y-2">
                         <p className="font-medium text-sm opacity-60">Enter OTP sent to your email</p>
                         <TextField
@@ -67,13 +69,16 @@ const LoginForm = () => {
                     </div>
                 )}
 
-                <Button onClick={handleSendOtp} fullWidth variant="contained" sx={{ py: "11px" }}>
-                    send OTP
-                </Button>
+                {!auth.otpSent ? (
+                    <Button onClick={handleSendOtp} fullWidth variant="contained" sx={{ py: "11px" }}>
+                        {auth.loading ? <CircularProgress size={20} /> : "Send OTP"}
+                    </Button>
+                ) : (
+                    <Button onClick={() => formik.handleSubmit()} fullWidth variant="contained" sx={{ py: "11px" }}>
+                        Login
+                    </Button>
+                )}
 
-                <Button onClick={() => formik.handleSubmit()} fullWidth variant="contained" sx={{ py: "11px" }}>
-                    Login
-                </Button>
             </div>
 
         </div>

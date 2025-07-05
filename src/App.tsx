@@ -19,11 +19,12 @@ import AdminDashboard from './admin/Pages/Dashboard/AdminDashboard';
 import { fetchSellerProfile } from './State/seller/sellerSlice';
 import { useAppDispatch, useAppSelector } from './State/Store';
 import Auth from './customer/pages/Auth/Auth';
+import { fetchUserProfile } from './State/AuthSlice';
 
 // ✅ Component that uses useNavigate (must be inside <BrowserRouter>)
 const AppContent = () => {
   const dispatch = useAppDispatch();
-  const { seller } = useAppSelector((store) => store);
+  const { seller,auth } = useAppSelector((store) => store);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +40,14 @@ const AppContent = () => {
     }
   }, [seller.profile]);
 
+  useEffect(() => {
+    const jwt = auth.jwt || localStorage.getItem("jwt");
+    if (jwt) {
+      dispatch(fetchUserProfile({ jwt }));
+    }
+  }, [auth.jwt]);
+  
+
   return (
     <>
       <Navbar />
@@ -50,7 +59,7 @@ const AppContent = () => {
         <Route path='/product-details/:categoryId/:name/:productId' element={<ProductDetails />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/checkout' element={<Checkout />} />
-        <Route path='/account' element={<Account />} />
+        <Route path='/account/*' element={<Account />} />
         <Route path='/become-seller' element={<BecomeSeller />} />
         <Route path='/seller/*' element={<SellerDashboard />} />
         <Route path='/admin/*' element={<AdminDashboard />} />

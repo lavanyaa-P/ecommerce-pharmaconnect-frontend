@@ -6,14 +6,16 @@ import sellerAuthReducer from "./seller/sellerAuthSlice";
 import sellerSlice from "./seller/sellerSlice"
 import sellerProductSlice from "./seller/sellerProductSlice";
 import productSlice from "./customer/ProductSlice";
+import authSlice from "./AuthSlice"
 
 
 const rootReducer = combineReducers({
-    auth: authReducer,
+    authRed: authReducer,
     sellerAuth: sellerAuthReducer,
     seller: sellerSlice,
     sellerProduct:sellerProductSlice,
-    product:productSlice
+    product:productSlice,
+    auth:authSlice
 });
 
 const store = configureStore({

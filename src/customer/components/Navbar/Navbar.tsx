@@ -16,12 +16,15 @@ import {
 } from "@mui/icons-material";
 import CategorySheet from "./CategorySheet";
 import { useNavigate } from "react-router-dom";
+import  {useAppSelector} from "../../../State/Store";
 
 const Navbar = () => {
     const theme = useTheme();
     const isLarge = useMediaQuery(theme.breakpoints.up("lg"));
     const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
     const navigate = useNavigate();
+    const { auth } = useAppSelector((store) => store);
+
 
     const categories = [
         "Healthcare Products",
@@ -74,7 +77,7 @@ const Navbar = () => {
                             <SearchIcon />
                         </IconButton>
 
-                        {false ? (
+                        {auth.isLoggedIn ?(
                             <Button
                                 onClick={() => navigate("/account/orders")}
                                 className="flex items-center gap-2"
@@ -83,7 +86,9 @@ const Navbar = () => {
                                     sx={{ width: 29, height: 29 }}
                                     src="https://accounts.google.com/SignOutOptions?hl=en"
                                 />
-                                <h1 className="font-semibold hidden lg:block">Pharma</h1>
+                                <h1 className="font-semibold hidden lg:block">
+                                    {auth.user?.fullName}
+                                </h1>
                             </Button>
                         ) : (
                             <Button  onClick={()=>navigate("/login")} variant="contained">Login</Button>
@@ -96,6 +101,7 @@ const Navbar = () => {
                         <IconButton onClick={() => navigate("/cart")}>
                             <AddShoppingCart className="text-gray-700" sx={{ fontSize: 29 }} />
                         </IconButton>
+
 
                         {isLarge && (
                             <Button
@@ -130,3 +136,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
