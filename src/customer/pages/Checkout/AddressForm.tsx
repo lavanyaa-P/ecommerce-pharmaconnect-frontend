@@ -3,6 +3,8 @@ import Grid2 from '@mui/material/Unstable_Grid2';
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from "yup"
+import { useAppDispatch } from '../../../State/Store';
+import { createOrder } from '../../../State/customer/orderSlice';
 
 const AddressFormSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
@@ -11,7 +13,7 @@ const AddressFormSchema = Yup.object().shape({
         .matches(/^[6-9]\d{9}$/, "Enter a valid mobile number"),
     pinCode: Yup.string()
         .required("Pin code is required")
-        .matches(/^[1-9][0-9]{6}$/, "Enter a valid pin code"),
+        .matches(/^[1-9][0-9]{5}$/, "Enter a valid pin code"),
     address: Yup.string().required("Address is required"),
     city: Yup.string().required("City is required"),
     state: Yup.string().required("State is required"),
@@ -28,7 +30,8 @@ type FormValues = {
     locality: string;
 };
 
-const AddressForm = () => {
+const AddressForm = ({paymentGateway}:any) => {
+    const dispatch=useAppDispatch();
     const formik = useFormik<FormValues>({
         initialValues: {
             name: '',
@@ -42,6 +45,10 @@ const AddressForm = () => {
         validationSchema: AddressFormSchema,
         onSubmit: (values) => {
             console.log(values);
+            dispatch(createOrder({address:values,
+                jwt:localStorage.getItem("jwt") || "",
+                paymentGateway:paymentGateway,
+            }))
         },
     });
 

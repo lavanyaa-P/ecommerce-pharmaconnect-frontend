@@ -6,7 +6,9 @@ import sellerAuthReducer from "./seller/sellerAuthSlice";
 import sellerSlice from "./seller/sellerSlice"
 import sellerProductSlice from "./seller/sellerProductSlice";
 import productSlice from "./customer/ProductSlice";
-import authSlice from "./AuthSlice"
+import authSlice from "./AuthSlice";
+import cartSlice from "./customer/cartSlice";
+import orderSlice from "./customer/orderSlice";
 
 
 const rootReducer = combineReducers({
@@ -15,7 +17,9 @@ const rootReducer = combineReducers({
     seller: sellerSlice,
     sellerProduct:sellerProductSlice,
     product:productSlice,
-    auth:authSlice
+    auth:authSlice,
+    cart:cartSlice,
+    order:orderSlice,
 });
 
 const store = configureStore({
