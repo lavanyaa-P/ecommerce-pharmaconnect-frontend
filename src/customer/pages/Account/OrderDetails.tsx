@@ -1,29 +1,37 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Button, Divider } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import OrderStepper from './OrderStepper';
 import { Payments } from '@mui/icons-material';
+import { useAppDispatch, useAppSelector } from '../../../State/Store';
+import { fetchOrderById, fetchOrderItemById } from '../../../State/customer/orderSlice';
 
 const OrderDetails = () => {
     const navigate = useNavigate();
+    const dispatch=useAppDispatch();
+    const {orderId,orderItemId}=useParams();
+    const {order}=useAppSelector(store => store);
+
+    useEffect(()=>{
+        dispatch(fetchOrderById({orderId: Number(orderId), jwt: localStorage.getItem("jwt") || ""}))
+    },[])
+
+    useEffect(()=>{
+        dispatch(fetchOrderItemById({orderItemId: Number(orderItemId), jwt: localStorage.getItem("jwt") || ""}))
+    },[])
 
     return (
         <Box className="space-y-5">
             <section className="flex flex-col gap-5 justify-center items-center">
                 <img
                     className="w-[150px]"
-                    src="https://www.netmeds.com/images/product-v1/600x600/929475/cetaphil_sun_spf_50_uvb_uva_very_high_protection_light_gel_50ml_149854_0_5.jpg"
+                    src={order.orderItem?.product.images[0]}
                     alt=""
                 />
                 <div className="text-sm space-y-1 text-center">
-                    <h1 className="font-bold">Virani pharma</h1>
+                    <h1 className="font-bold">{order.orderItem?.product.seller?.businessDetails.businessName}</h1>
                     <p>
-                        CETAPHIL Sun SPF 50 UVB/UVA Very High Protection Light Gel is
-                        dermatologically tested and recommended by skincare professionals
-                        for daily sun protection.
-                    </p>
-                    <p>
-                        <strong>FREE</strong>
+                        {order.orderItem?.product.title}
                     </p>
                 </div>
                 <div>
@@ -40,12 +48,15 @@ const OrderDetails = () => {
                 <h1 className="font-bold pb-3">Delivery Address</h1>
                 <div className="text-sm space-y-2">
                     <div className="flex gap-5 font-medium">
-                        <p>{"Lavanya"}</p>
+                        <p>{order.currentOrder?.shippingAddress.name}</p>
                         <Divider flexItem orientation="vertical" />
-                        <p>{"9012345785"}</p>
+                        <p>{order.currentOrder?.shippingAddress.mobile}</p>
                     </div>
                     <p>
-                        Ambavadi choke, Bengaluru, Karnataka - 530068
+                        {order.currentOrder?.shippingAddress.address},{" "}
+                        {order.currentOrder?.shippingAddress.state},{" "}
+                        {order.currentOrder?.shippingAddress.city},{" "}
+                        {order.currentOrder?.shippingAddress.pinCode},{" "}
                     </p>
                 </div>
             </div>
@@ -63,7 +74,7 @@ const OrderDetails = () => {
 
                 <div className='px-5'>
                     <div className='bg-teal-50 px-5 py-2 text-xs font-medium flex items-center gap-3'>
-                        <p className="font-medium">(799.00)</p>
+                        <p className="font-medium">{order.orderItem?.sellingPrice}</p>
                     </div>
                 </div>
 
@@ -78,7 +89,8 @@ const OrderDetails = () => {
 
                 <div className="px-5 pb-5">
                     <p className='text-xs'>
-                        <strong>Sold by: </strong> {"Virani Pharma"}
+                    <h1 className="font-bold">{order.orderItem?.product.seller?.businessDetails.businessName}</h1>
+                        <strong>Sold by: </strong> {}
                     </p>
                 </div>
 

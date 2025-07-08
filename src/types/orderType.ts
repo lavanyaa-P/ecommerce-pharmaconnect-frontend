@@ -1,6 +1,5 @@
-import { Address } from "cluster";
 import { Product } from "./ProductTypes";
-import { User } from "./userTypes";
+import { Address, User } from "./userTypes";
 
 export interface OrderState {
     orders: Order[];

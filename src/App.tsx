@@ -20,6 +20,7 @@ import { fetchSellerProfile } from './State/seller/sellerSlice';
 import { useAppDispatch, useAppSelector } from './State/Store';
 import Auth from './customer/pages/Auth/Auth';
 import { fetchUserProfile } from './State/AuthSlice';
+import Wishlist from './customer/Wishlist/Wishlist';
 
 // ✅ Component that uses useNavigate (must be inside <BrowserRouter>)
 const AppContent = () => {
@@ -63,6 +64,7 @@ const AppContent = () => {
         <Route path='/become-seller' element={<BecomeSeller />} />
         <Route path='/seller/*' element={<SellerDashboard />} />
         <Route path='/admin/*' element={<AdminDashboard />} />
+        <Route path='/wishlist' element={<Wishlist />} />
       </Routes>
     </>
   );

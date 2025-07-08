@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { Favorite, ModeComment } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../../State/Store";
+import { addProductToWishlist } from "../../../State/customer/wishlistSlice";
 
 type Props = {
   id: string | number;
@@ -29,8 +31,8 @@ const ProductCart: React.FC<Props> = ({
   const [currentImage, setCurrentImage] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch()
 
-  // Image switching logic
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
     if (isHovered && images.length > 1) {
@@ -45,6 +47,16 @@ const ProductCart: React.FC<Props> = ({
     ? discount
     : `${Math.round(((originalPrice - price) / originalPrice) * 100)}% OFF`;
 
+
+  const handleWishlist = (e:any) => {
+    e.stopPropagation()
+
+    if (id) {
+      dispatch(addProductToWishlist({ productId: Number(id) }));
+    }
+  };
+
+
   return (
     <div
       onClick={() =>
@@ -52,7 +64,7 @@ const ProductCart: React.FC<Props> = ({
       }
       className="group p-4 border rounded shadow hover:scale-[1.02] transition-transform cursor-pointer"
     >
-      {/* ⭐ Just One Image That Changes */}
+
       <div
         className="relative w-full h-60 overflow-hidden rounded"
         onMouseEnter={() => setIsHovered(true)}
@@ -66,7 +78,7 @@ const ProductCart: React.FC<Props> = ({
 
         {isHovered && (
           <div className="absolute bottom-2 left-2 flex gap-2 bg-white bg-opacity-80 p-1 rounded">
-            <Button variant="contained" color="secondary">
+            <Button onClick={(e)=>handleWishlist(e)} variant="contained" color="secondary">
               <Favorite sx={{ color: "#003399" }} />
             </Button>
             <Button variant="contained" color="secondary">
@@ -76,13 +88,13 @@ const ProductCart: React.FC<Props> = ({
         )}
       </div>
 
-      {/* ⭐ Details */}
+
       <div className="pt-3 space-y-1">
         <h1 className="font-semibold text-gray-800">{name}</h1>
         <p className="text-gray-500 text-sm">{description}</p>
       </div>
 
-      {/* ⭐ Price */}
+
       <div className="flex items-center gap-3 mt-1">
         <span className="text-lg font-semibold text-gray-800">₹{price}</span>
         <span className="line-through text-gray-500">₹{originalPrice}</span>
