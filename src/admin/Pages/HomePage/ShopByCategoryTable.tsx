@@ -1,12 +1,19 @@
-import React from 'react'
-import HomeCategoryTable from './HomeCategoryTable'
+import React from 'react';
+import HomeCategoryTable from './HomeCategoryTable';
+import { useAppSelector } from '../../../State/Store';
 
-const ShopByCategoryTable = () =>{
-    return(
+const ShopByCategoryTable = () => {
+    const { customer } = useAppSelector((store) => store);
+
+    return (
         <div>
-            <HomeCategoryTable/>
+            {customer.homeData?.medicineCategories ? (
+                <HomeCategoryTable data={customer.homeData.medicineCategories} />
+            ) : (
+                <p>No categories found.</p>
+            )}
         </div>
-    )
-}
+    );
+};
 
-export default ShopByCategoryTable
+export default ShopByCategoryTable;

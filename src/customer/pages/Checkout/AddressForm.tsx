@@ -2,9 +2,11 @@ import { Box, Button, TextField } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import React from 'react';
 import { useFormik } from 'formik';
-import * as Yup from "yup"
+import * as Yup from "yup";
 import { useAppDispatch } from '../../../State/Store';
-import { createOrder } from '../../../State/customer/orderSlice';
+import { addNewAddress } from '../../../State/customer/addressSlice';
+import { Address } from '../../../types/addressType';
+import toast from 'react-hot-toast';
 
 const AddressFormSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
@@ -20,19 +22,10 @@ const AddressFormSchema = Yup.object().shape({
     locality: Yup.string().required("Locality is required"),
 });
 
-type FormValues = {
-    name: string;
-    mobile: string;
-    pinCode: string;
-    address: string;
-    city: string;
-    state: string;
-    locality: string;
-};
+const AddressForm = ({ paymentGateway }: any) => {
+    const dispatch = useAppDispatch();
 
-const AddressForm = ({paymentGateway}:any) => {
-    const dispatch=useAppDispatch();
-    const formik = useFormik<FormValues>({
+    const formik = useFormik<Address>({
         initialValues: {
             name: '',
             mobile: '',
@@ -44,11 +37,17 @@ const AddressForm = ({paymentGateway}:any) => {
         },
         validationSchema: AddressFormSchema,
         onSubmit: (values) => {
-            console.log(values);
-            dispatch(createOrder({address:values,
-                jwt:localStorage.getItem("jwt") || "",
-                paymentGateway:paymentGateway,
-            }))
+            const jwt = localStorage.getItem("jwt") || "";
+
+            dispatch(addNewAddress({ jwt, address: values }))
+                .unwrap()
+                .then(() => {
+                    toast.success("Address added successfully");
+                    formik.resetForm();
+                })
+                .catch(() => {
+                    toast.error("Failed to add address");
+                });
         },
     });
 
@@ -94,7 +93,7 @@ const AddressForm = ({paymentGateway}:any) => {
                         <TextField
                             fullWidth
                             name="address"
-                            label="address"
+                            label="Address"
                             value={formik.values.address}
                             onChange={formik.handleChange}
                             error={formik.touched.address && Boolean(formik.errors.address)}
@@ -105,7 +104,7 @@ const AddressForm = ({paymentGateway}:any) => {
                         <TextField
                             fullWidth
                             name="locality"
-                            label="locality"
+                            label="Locality"
                             value={formik.values.locality}
                             onChange={formik.handleChange}
                             error={formik.touched.locality && Boolean(formik.errors.locality)}
@@ -116,7 +115,7 @@ const AddressForm = ({paymentGateway}:any) => {
                         <TextField
                             fullWidth
                             name="city"
-                            label="city"
+                            label="City"
                             value={formik.values.city}
                             onChange={formik.handleChange}
                             error={formik.touched.city && Boolean(formik.errors.city)}
@@ -127,7 +126,7 @@ const AddressForm = ({paymentGateway}:any) => {
                         <TextField
                             fullWidth
                             name="state"
-                            label="state"
+                            label="State"
                             value={formik.values.state}
                             onChange={formik.handleChange}
                             error={formik.touched.state && Boolean(formik.errors.state)}
@@ -135,7 +134,7 @@ const AddressForm = ({paymentGateway}:any) => {
                         />
                     </Grid2>
                     <Grid2 xs={12}>
-                        <Button fullWidth type='submit' variant='contained' sx ={{py:"14px"}}>
+                        <Button fullWidth type='submit' variant='contained' sx={{ py: "14px" }}>
                             Add Address
                         </Button>
                     </Grid2>

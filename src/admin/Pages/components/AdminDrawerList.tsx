@@ -1,8 +1,14 @@
-import React from "react"
-import DrawerList from "../../../component/DrawerList"
-import { Dashboard, IntegrationInstructionsOutlined, Add, Category, LocalOffer, Home, AccountBox, Logout, IntegrationInstructions } from "@mui/icons-material";
-
-
+import React from "react";
+import DrawerList from "../../../component/DrawerList";
+import {
+    Dashboard,
+    IntegrationInstructions,
+    Add,
+    Category,
+    LocalOffer,
+    Home,
+    Logout
+} from "@mui/icons-material";
 
 const menu = [
     {
@@ -45,12 +51,6 @@ const menu = [
 
 const menu2 = [
     {
-        name: "Account",
-        path: "/seller/account",
-        icon: <AccountBox className="text-primary-color" />,
-        activeIcon: <AccountBox className="text-white" />
-    },
-    {
         name: "Logout",
         path: "/",
         icon: <Logout className="text-primary-color" />,
@@ -58,12 +58,10 @@ const menu2 = [
     }
 ];
 
-
-
 const AdminDrawerList = ({ toggleDrawer }: any) => {
     return (
         <DrawerList menu={menu} menu2={menu2} toggleDrawer={toggleDrawer} />
-    )
-}
+    );
+};
 
-export default AdminDrawerList
+export default AdminDrawerList;

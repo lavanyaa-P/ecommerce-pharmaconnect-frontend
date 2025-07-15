@@ -48,7 +48,7 @@ const Navbar = () => {
                             )}
                             <h1
                                 onClick={() => navigate("/")}
-                                className="logo cursor-pointer text-lg md:text-2xl text-primary-color"
+                                className="logo cursor-pointer text-lg md:text-2xl text-primary-color font-bold"
                             >
                                 PharmaConnect
                             </h1>
@@ -73,10 +73,6 @@ const Navbar = () => {
 
                     {/* Right Section */}
                     <div className="flex items-center gap-3 lg:gap-6 w-full lg:w-auto">
-                        <IconButton>
-                            <SearchIcon />
-                        </IconButton>
-
                         {auth.isLoggedIn ?(
                             <Button
                                 onClick={() => navigate("/account/orders")}

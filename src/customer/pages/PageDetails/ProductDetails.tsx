@@ -1,10 +1,3 @@
-import React from 'react';
-import StarIcon from '@mui/icons-material/Star';
-import AddIcon from '@mui/icons-material/Add';
-import {
-    Button,
-    Divider
-} from '@mui/material';
 import {
     AddShoppingCart,
     FavoriteBorder,
@@ -13,11 +6,26 @@ import {
     Wallet,
     WorkspacePremium
 } from '@mui/icons-material';
-import SimilarProduct from './SimilarProduct';
+import AddIcon from '@mui/icons-material/Add';
+import StarIcon from '@mui/icons-material/Star';
+import {
+    Button,
+    Divider
+} from '@mui/material';
+import React from 'react';
+
 import ReviewCart from '../Review/ReviewCart';
-import { useAppDispatch } from '../../../State/Store';
+import ReviewForm from '../Review/ReviewForm';
+import SimilarProduct from './SimilarProduct';
+
 import { useParams } from 'react-router-dom';
-import { productList } from '../Product/Product';
+import { toast } from 'react-toastify';
+import { addItemToCart } from '../../../State/customer/cartSlice';
+import { fetchProductById } from '../../../State/customer/ProductSlice';
+import { fetchProductReviews } from '../../../State/customer/reviewSlice';
+import { addProductToWishlist } from '../../../State/customer/wishlistSlice';
+import { useAppDispatch, useAppSelector } from '../../../State/Store';
+ // ✅ Added this
 
 const ProductDetails = () => {
     const [quantity, setQuantity] = React.useState(1);
@@ -25,16 +33,62 @@ const ProductDetails = () => {
 
     const dispatch = useAppDispatch();
     const { productId } = useParams();
+    const jwt = localStorage.getItem("jwt");
 
-    const product = productList.find(
-        (item) => item.id?.toString() === productId
-    );
+    const { reviews, loading: reviewLoading } = useAppSelector(state => state.review);
+    const { product, loading: productLoading } = useAppSelector(state => state.product); // ✅ Redux product
 
+    // ✅ Fetch product and reviews
     React.useEffect(() => {
-        if (product && product.images.length > 0) {
+        if (productId) {
+            dispatch(fetchProductById(Number(productId)));
+            dispatch(fetchProductReviews(Number(productId)));
+        }
+    }, [dispatch, productId]);
+
+    // ✅ Set default image
+    React.useEffect(() => {
+        if (product && product.images?.length > 0) {
             setSelectedImage(product.images[0]);
         }
     }, [product]);
+
+    const handleAddToBag = () => {
+        if (!jwt || !product?.id) {
+            toast.error("Please login to add items to cart");
+            return;
+        }
+
+        dispatch(
+            addItemToCart({
+                jwt,
+                request: {
+                    productId: product.id,
+                    size: "default",
+                    quantity: quantity,
+                },
+            })
+        )
+            .unwrap()
+            .then(() => toast.success("Item added to cart"))
+            .catch((err) => toast.error(err));
+    };
+
+    const handleAddToWishlist = () => {
+        if (!jwt || !product?.id) {
+            toast.error("Please login to add to wishlist");
+            return;
+        }
+
+        dispatch(addProductToWishlist({ productId: product.id }))
+            .unwrap()
+            .then(() => toast.success("Added to wishlist"))
+            .catch((err) => toast.error(err));
+    };
+
+    if (productLoading) {
+        return <div className="text-center text-gray-600 py-10">Loading product...</div>;
+    }
 
     if (!product) {
         return <div className="text-center text-red-500 py-10">Product not found</div>;
@@ -43,8 +97,7 @@ const ProductDetails = () => {
     return (
         <div className='px-5 lg:px-20 pt-10'>
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-5'>
-
-                {/* 🖼️ LEFT SIDE: Image Gallery */}
+                {/* LEFT SIDE: Image Gallery */}
                 <section className='flex flex-col lg:flex-row gap-5'>
                     <div className='w-full lg:w-[20%] flex flex-wrap lg:flex-col gap-2'>
                         {product.images.map((img, index) => (
@@ -66,14 +119,12 @@ const ProductDetails = () => {
                     </div>
                 </section>
 
-                {/* 📝 RIGHT SIDE: Product Details */}
+                {/* RIGHT SIDE: Product Details */}
                 <section className='space-y-5'>
                     <h1 className='font-bold text-lg text-primary-color'>
-                        {product.title ?? product.name}
+                        {product.title ?? product.title}
                     </h1>
-                    <p className='text-gray-500 font-semibold'>
-                        {product.description}
-                    </p>
+                    <p className='text-gray-500 font-semibold'>{product.description}</p>
 
                     <div className='flex justify-between items-center py-2 border w-[180px] px-3 mt-5'>
                         <div className='flex gap-1 items-center'>
@@ -86,11 +137,14 @@ const ProductDetails = () => {
 
                     <div>
                         <div className="price flex items-center gap-3 mt-5 text-2xl">
-                            <span className="font-sans text-gray-800">₹ {product.price}</span>
-                            <span className="line-through text-gray-400">₹ {product.originalPrice}</span>
-                            <span className="text-primary-color font-semibold">{product.discount}</span>
+                            <span className="font-sans text-gray-800">₹ {product.sellingPrice}</span>
+<span className="line-through text-gray-400">₹ {product.mrpPrice}</span>
+<span className="text-primary-color font-semibold">
+  {product.discountPercent}% OFF
+</span>
+
                         </div>
-                        <p className='text-sm'>Inclusive of all taxes. Free Shipping above ₹{product.price}.</p>
+                        <p className='text-sm'>Inclusive of all taxes. Free Shipping below ₹{product.sellingPrice}.</p>
                     </div>
 
                     <div className='mt-7 space-y-3'>
@@ -127,6 +181,7 @@ const ProductDetails = () => {
                             variant='contained'
                             startIcon={<AddShoppingCart />}
                             sx={{ py: '1rem' }}
+                            onClick={handleAddToBag}
                         >
                             Add To Bag
                         </Button>
@@ -136,14 +191,31 @@ const ProductDetails = () => {
                             variant='outlined'
                             startIcon={<FavoriteBorder />}
                             sx={{ py: '1rem' }}
+                            onClick={handleAddToWishlist}
                         >
                             Wishlist
                         </Button>
                     </div>
 
+                    {/* ✅ DYNAMIC REVIEWS SECTION */}
                     <div className='mt-12 space-y-5'>
-                        <ReviewCart />
-                        <Divider />
+                        <h2 className='text-lg font-semibold'>Customer Reviews</h2>
+
+                        {/* ✅ Add Review Form */}
+                        <ReviewForm
+                            productId={Number(productId)}
+                            onReviewSubmitted={() => dispatch(fetchProductReviews(Number(productId)))}
+                        />
+
+                        {reviewLoading && <p>Loading reviews...</p>}
+                        {!reviewLoading && reviews.length === 0 && <p>No reviews found.</p>}
+                        {!reviewLoading &&
+                            reviews.map((review) => (
+                                <div key={review.id}>
+                                    <ReviewCart review={review} />
+                                    <Divider sx={{ my: 2 }} />
+                                </div>
+                            ))}
                     </div>
                 </section>
             </div>

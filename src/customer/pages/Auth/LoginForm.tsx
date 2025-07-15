@@ -1,35 +1,49 @@
 import { useFormik } from 'formik';
-import React, { useState } from 'react'
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../../State/Store';
 import { Button, CircularProgress, TextField } from '@mui/material';
-import { sendLoginSignupOtp } from '../../../State/AuthSlice';
-import { signin } from '../../../State/AuthSlice'
+import { sendLoginSignupOtp, signin } from '../../../State/AuthSlice';
 
 const LoginForm = () => {
-
-
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const auth = useAppSelector(store => store.auth);
 
     const formik = useFormik({
         initialValues: {
-            email: "", // make sure this is not preset
+            email: "",
             otp: ""
         },
         onSubmit: (values) => {
-            console.log("Form submitted with:", values);
-            dispatch(signin(values))
+            dispatch(signin(values));
         }
     });
 
     const handleSendOtp = () => {
-        console.log("Sending OTP to:", formik.values.email);
-        dispatch(sendLoginSignupOtp({ email: formik.values.email, role: "ROLE_CUSTOMER" }));
+        dispatch(
+            sendLoginSignupOtp({
+                email: `signing_${formik.values.email}`,
+                role: "ROLE_CUSTOMER",
+            })
+        );
     };
 
+    useEffect(() => {
+        if (auth.user && auth.user.email) {
+            const isAdmin = auth.user.email === "pshashank412@gmail.com";
+
+            if (isAdmin) {
+                navigate("/admin/deals");
+            } else {
+                navigate("/");
+            }
+        }
+    }, [auth.user, navigate]);
+
     return (
-        <div>
+        <div className="py-5">
             <h1
                 className="text-center font-bold text-xl pb-8"
                 style={{ color: "#003399" }}
@@ -37,7 +51,7 @@ const LoginForm = () => {
                 Login
             </h1>
 
-            <div className="space-y-5">
+            <div className="space-y-5 min-h-[220px]">
                 <TextField
                     fullWidth
                     name="email"
@@ -50,7 +64,7 @@ const LoginForm = () => {
                 />
 
                 <div className="text-xs text-gray-500">
-                    <p>Live Debug Email: {formik.values.email}</p> {/* 🧪 Live Debug */}
+                    <p>Live Debug Email: {formik.values.email}</p>
                 </div>
 
                 {auth.otpSent && (
@@ -78,11 +92,9 @@ const LoginForm = () => {
                         Login
                     </Button>
                 )}
-
             </div>
-
         </div>
-    )
-}
+    );
+};
 
-export default LoginForm
+export default LoginForm;

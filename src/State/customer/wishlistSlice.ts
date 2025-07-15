@@ -61,6 +61,7 @@ export const addProductToWishlist = createAsyncThunk(
 );
 
 
+
 const wishlistSlice = createSlice({
     name: "wishlist",
     initialState,

@@ -4,13 +4,14 @@ import { Product } from "../../types/ProductTypes";
 
 const API_URL = "http://localhost:5454/products";
 
+
 // ✅ Thunk to fetch product by ID
-export const fetchProductById = createAsyncThunk(
+export const fetchProductById = createAsyncThunk<Product, number, { rejectValue: string }>(
   "products/fetchProductById",
   async (productId, { rejectWithValue }) => {
     try {
       const response = await api.get(`${API_URL}/${productId}`);
-      const data = await response.data;
+      const data = response.data;
       console.log("data ", data);
       return data;
     } catch (error: any) {
@@ -19,6 +20,7 @@ export const fetchProductById = createAsyncThunk(
     }
   }
 );
+
 
 // ✅ Thunk to search products
 export const searchProduct = createAsyncThunk(
@@ -48,6 +50,7 @@ export const fetchAllProducts = createAsyncThunk<any, any>(
       const response = await api.get(`${API_URL}`, {
         params: {
           ...params,
+          stock: "In_Stock",          // 👈 Add this line
           pageNumber: params.pageNumber || 0,
         },
       });
@@ -60,6 +63,7 @@ export const fetchAllProducts = createAsyncThunk<any, any>(
     }
   }
 );
+
 
 // ✅ Product state interface
 interface ProductState {

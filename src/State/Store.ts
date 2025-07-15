@@ -1,7 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 
-import authReducer from "./AuthSlice";
+
 import sellerAuthReducer from "./seller/sellerAuthSlice";
 import sellerSlice from "./seller/sellerSlice"
 import sellerProductSlice from "./seller/sellerProductSlice";
@@ -10,11 +10,16 @@ import authSlice from "./AuthSlice";
 import cartSlice from "./customer/cartSlice";
 import orderSlice from "./customer/orderSlice";
 import wishlistSlice from "./customer/wishlistSlice";
-
+import sellerOrderSlice from "./seller/sellerOrderSlice";
+import adminSlice from "./admin/adminSlice"
+import customerSlice from "./customer/customerSlice"
+import dealSlice from "./admin/DealSlice";
+import addressSlice from "./customer/addressSlice"
+import reviewSlice from "./customer/reviewSlice"
+import sellerOrderReducer from "../../src/State/seller/sellerOrderSlice"
 
 
 const rootReducer = combineReducers({
-    authRed: authReducer,
     sellerAuth: sellerAuthReducer,
     seller: sellerSlice,
     sellerProduct:sellerProductSlice,
@@ -23,6 +28,13 @@ const rootReducer = combineReducers({
     cart:cartSlice,
     order:orderSlice,
     wishlist:wishlistSlice,
+    customer:customerSlice,
+    sellerOrder:sellerOrderSlice,
+    admin:adminSlice,
+    deal:dealSlice,
+    address: addressSlice,
+    sellerorder: sellerOrderReducer,
+    review: reviewSlice,
 });
 
 const store = configureStore({

@@ -1,41 +1,38 @@
 import { useFormik } from 'formik';
-import React from 'react'
-import { sendLoginSignupOtp } from '../../../State/AuthSlice';
-import { useAppDispatch } from '../../../State/Store';
-import { Button, TextField } from '@mui/material';
+import React from 'react';
+import { sendLoginSignupOtp, signup } from '../../../State/AuthSlice';
+import { useAppDispatch, useAppSelector } from '../../../State/Store';
+import { Button, TextField, CircularProgress } from '@mui/material';
 
 const RegisterForm = () => {
-
     const dispatch = useAppDispatch();
+    const auth = useAppSelector((state) => state.auth);
 
     const formik = useFormik({
         initialValues: {
-            email: "", // make sure this is not preset
+            email: "",
             otp: "",
             fullName: ""
         },
         onSubmit: (values) => {
-            console.log("Form submitted with:", values);
-
+            dispatch(signup(values));
         }
     });
 
     const handleSendOtp = () => {
-        console.log("Sending OTP to:", formik.values.email);
-        dispatch(sendLoginSignupOtp({ email: formik.values.email, role: "ROLE_USER" }));
-
+        dispatch(sendLoginSignupOtp({
+            email: formik.values.email,
+            role: "ROLE_CUSTOMER"
+        }));
     };
 
     return (
-        <div>
-            <h1
-                className="text-center font-bold text-xl pb-8"
-                style={{ color: "#003399" }}
-            >
+        <div className="py-5">
+            <h1 className="text-center font-bold text-xl pb-8" style={{ color: "#003399" }}>
                 Signup
             </h1>
 
-            <div className="space-y-5">
+            <div className="space-y-5 min-h-[220px]">
                 <TextField
                     fullWidth
                     name="email"
@@ -43,27 +40,23 @@ const RegisterForm = () => {
                     value={formik.values.email}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
                 />
 
                 <div className="text-xs text-gray-500">
-                    <p>Live Debug Email: {formik.values.email}</p> {/* 🧪 Live Debug */}
+                    <p>Live Debug Email: {formik.values.email}</p>
                 </div>
 
-                {true && (
+                {auth.otpSent && (
                     <div className="space-y-3">
                         <div className='space-y-5'>
                             <p className="font-medium text-sm opacity-60">Enter OTP sent to your email</p>
                             <TextField
                                 fullWidth
                                 name="otp"
-                                label="Otp"
+                                label="OTP"
                                 value={formik.values.otp}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                error={formik.touched.otp && Boolean(formik.errors.otp)}
-                                helperText={formik.touched.otp && formik.errors.otp}
                             />
                         </div>
 
@@ -74,22 +67,24 @@ const RegisterForm = () => {
                             value={formik.values.fullName}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.fullName && Boolean(formik.errors.fullName)}
-                            helperText={formik.touched.fullName && formik.errors.fullName}
                         />
                     </div>
                 )}
 
-                {false && <Button onClick={handleSendOtp} fullWidth variant="contained" sx={{ py: "11px" }}>
-                    send OTP
-                </Button>}
+                {!auth.otpSent && (
+                    <Button onClick={handleSendOtp} fullWidth variant="contained" sx={{ py: "11px" }}>
+                        {auth.loading ? <CircularProgress size={20} /> : "Send OTP"}
+                    </Button>
+                )}
 
-                <Button onClick={() => formik.handleSubmit()} fullWidth variant="contained" sx={{ py: "11px" }}>
-                    Signup
-                </Button>
+                {auth.otpSent && (
+                    <Button onClick={() => formik.handleSubmit()} fullWidth variant="contained" sx={{ py: "11px" }}>
+                        {auth.loading ? <CircularProgress size={20} /> : "Signup"}
+                    </Button>
+                )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default RegisterForm
+export default RegisterForm;

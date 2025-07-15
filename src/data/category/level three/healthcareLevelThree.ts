@@ -20,6 +20,7 @@ export const healthcareLevelThree = [
   { name: "Hot & Cold Packs", categoryId: "hot_cold_packs", parentCategoryName: "First Aid & Safety", parentCategoryId: "first_aid_safety" },
   { name: "Antiseptic Creams", categoryId: "antiseptic_creams", parentCategoryName: "First Aid & Safety", parentCategoryId: "first_aid_safety" },
   { name: "First Aid Kits", categoryId: "first_aid_kits", parentCategoryName: "First Aid & Safety", parentCategoryId: "first_aid_safety" },
+  { name: "cold and flu", categoryId: "cold_and_flu", parentCategoryName: "First Aid & Safety", parentCategoryId: "first_aid_safety" },
 
   // Medical Devices
   { name: "Surgical Gloves", categoryId: "surgical_gloves", parentCategoryName: "Medical Devices", parentCategoryId: "medical_devices" },

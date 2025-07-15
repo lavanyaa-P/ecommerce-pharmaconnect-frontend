@@ -1,15 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { HomeCategory } from "../../../../types/homeCategoryType";
 
 type Props = {
-    img: string;
-    name: string;
+    item: HomeCategory;
 };
 
-const HealthcareProductsCategoryCart: React.FC<Props> = ({ img, name }) => {
+const HealthcareProductsCategoryCart: React.FC<Props> = ({ item }) => {
+    useEffect(() => {
+        console.log("Item image:", item.image);
+    }, [item]);
+
     return (
-        <div className="w-[200px] text-center mb-4">
-            <img className="object-contain h-16 w-full rounded" src={img} alt={name} />
-            <h2 className="font-semibold text-sm mt-2">{name}</h2>
+        <div className="w-48 p-4 bg-white rounded-2xl shadow-md text-center hover:shadow-lg transition-all duration-300">
+            <img
+                className="h-32 w-32 object-contain mx-auto rounded-md"
+                src={item.image}
+                alt={item.name}
+                onError={(e) => {
+                    e.currentTarget.src = "https://via.placeholder.com/100?text=No+Image";
+                }}
+            />
+            <h2 className="font-medium text-sm mt-3 text-gray-800">{item.name}</h2>
         </div>
     );
 };

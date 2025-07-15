@@ -1,27 +1,29 @@
 import { Radio } from '@mui/material';
 import React from 'react';
+import { Address } from '../../../types/addressType';
 
-const AddressCart = () => {
-    const handleChange = (event:any) => {
-        console.log(event.target.checked)
-    }
-    return(
+const AddressCart = ({ address }: { address: Address }) => {
+    const handleChange = (event: any) => {
+        console.log("Selected Address ID:", event.target.value);
+    };
+
+    return (
         <div className='p-5 border rounded-md flex'>
             <div>
-                <Radio 
-                checked={true}
-                onChange={handleChange}
-                value=""
-                name="radio-button"
+                <Radio
+                    checked={false} // You can manage selected ID in Checkout state later
+                    onChange={handleChange}
+                    value={address.id}
+                    name="selected-address"
                 />
             </div>
             <div className='space-y-3 pt-3'>
-                <h1>Lavanya</h1>
-                <p>Ambavadi choke, Bengaluru, Karnataka - 530068</p>
-                <p><strong>Mobile </strong> :9101234580</p>
+                <h1>{address.name}</h1>
+                <p>{address.locality}, {address.city}, {address.state} - {address.pinCode}</p>
+                <p><strong>Mobile</strong>: {address.mobile}</p>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default AddressCart
+export default AddressCart;

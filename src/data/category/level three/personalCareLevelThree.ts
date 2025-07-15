@@ -1,12 +1,12 @@
 export const personalCareLevelThree = [
   // Hair Care
-  { name: "Shampoo", categoryId: "shampoo_sub", parentCategoryName: "Hair Care", parentCategoryId: "hair_care" },
-  { name: "Conditioner", categoryId: "conditioner_sub", parentCategoryName: "Hair Care", parentCategoryId: "hair_care" },
-  { name: "Hair Oil", categoryId: "hair_oil_sub", parentCategoryName: "Hair Care", parentCategoryId: "hair_care" },
+  { name: "Shampoo", categoryId: "shampoo", parentCategoryName: "Hair Care", parentCategoryId: "hair_care" },
+  { name: "Conditioner", categoryId: "conditioner", parentCategoryName: "Hair Care", parentCategoryId: "hair_care" },
+  { name: "Hair Oil", categoryId: "hair_oil", parentCategoryName: "Hair Care", parentCategoryId: "hair_care" },
   { name: "Hair Serum", categoryId: "hair_serum", parentCategoryName: "Hair Care", parentCategoryId: "hair_care" },
   { name: "Hair Masks", categoryId: "hair_masks", parentCategoryName: "Hair Care", parentCategoryId: "hair_care" },
   { name: "Anti-dandruff Solutions", categoryId: "anti_dandruff_solutions", parentCategoryName: "Hair Care", parentCategoryId: "hair_care" },
-  { name: "Hair Fall Control Products", categoryId: "hair_fall_control_products", parentCategoryName: "Hair Care", parentCategoryId: "hair_care" },
+  { name: "Hair Fall Control Products", categoryId: "hair_fall_control", parentCategoryName: "Hair Care", parentCategoryId: "hair_care" },
   { name: "Hair Color", categoryId: "hair_color", parentCategoryName: "Hair Care", parentCategoryId: "hair_care" },
 
   // Skin Care

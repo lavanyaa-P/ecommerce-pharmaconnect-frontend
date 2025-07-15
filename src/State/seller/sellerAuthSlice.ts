@@ -1,40 +1,39 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../../config/api";
+import { Seller } from "../../types/SellerTypes";
+
 
 // Async thunk for seller login
-export const sellerLogin = createAsyncThunk<any, any>(
+export const sellerLogin = createAsyncThunk<Seller, any>(
   "/auth/signin",
   async (loginRequest, { rejectWithValue }) => {
     try {
-      const response = await api.post("/auth/signing", loginRequest);
-      console.log("login otp ", response.data);
-      const jwt=response.data.jwt;
+      const response = await api.post("/auth/signin", loginRequest);
+      const jwt = response.data.jwt;
       localStorage.setItem("jwt", jwt);
-      return response.data;
+      return response.data; // Contains full Seller object
     } catch (error: any) {
-      console.log("error------", error);
       return rejectWithValue(error.response?.data || "Login failed");
     }
   }
 );
 
-// Define seller auth state
 interface SellerState {
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
+  seller: Seller | null;
 }
 
-// Initial state
 const initialState: SellerState = {
   isAuthenticated: false,
   loading: false,
   error: null,
+  seller: null,
 };
 
-// Create slice
 const sellerAuthSlice = createSlice({
-  name: "seller",
+  name: "sellerAuth",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -46,6 +45,7 @@ const sellerAuthSlice = createSlice({
       .addCase(sellerLogin.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
+        state.seller = action.payload; // ✅ store seller info
       })
       .addCase(sellerLogin.rejected, (state, action) => {
         state.loading = false;
@@ -54,5 +54,4 @@ const sellerAuthSlice = createSlice({
   },
 });
 
-// ✅ Export the reducer as default
 export default sellerAuthSlice.reducer;

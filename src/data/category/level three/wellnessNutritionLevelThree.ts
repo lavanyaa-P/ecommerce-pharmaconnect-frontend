@@ -1,13 +1,15 @@
 export const wellnessNutritionLevelThree = [
   // Vitamins
-  { name: "Multivitamin Tablets", categoryId: "multivitamin_tablets_sub", parentCategoryName: "Vitamins", parentCategoryId: "vitamins" },
-  { name: "Vitamin C Chewables", categoryId: "vitamin_c_chewables_sub", parentCategoryName: "Vitamins", parentCategoryId: "vitamins" },
-  { name: "Vitamin D Drops", categoryId: "vitamin_d_drops_sub", parentCategoryName: "Vitamins", parentCategoryId: "vitamins" },
-  { name: "B-Complex Capsules", categoryId: "b_complex_capsules_sub", parentCategoryName: "Vitamins", parentCategoryId: "vitamins" },
+  { name: "Multivitamin Tablets", categoryId: "multivitamin_tablets", parentCategoryName: "Vitamins", parentCategoryId: "vitamins" },
+  { name: "Vitamin C Chewables", categoryId: "vitamin_c_chewables", parentCategoryName: "Vitamins", parentCategoryId: "vitamins" },
+  { name: "Vitamin D Drops", categoryId: "vitamin_d_drops", parentCategoryName: "Vitamins", parentCategoryId: "vitamins" },
+  { name: "B-Complex Capsules", categoryId: "b_complex_capsules", parentCategoryName: "Vitamins", parentCategoryId: "vitamins" },
   { name: "Prenatal Vitamins", categoryId: "prenatal_vitamins", parentCategoryName: "Vitamins", parentCategoryId: "vitamins" },
   { name: "Kids Gummies", categoryId: "kids_gummies", parentCategoryName: "Vitamins", parentCategoryId: "vitamins" },
   { name: "Hair, Skin & Nails Vitamins", categoryId: "hair_skin_nails_vitamins", parentCategoryName: "Vitamins", parentCategoryId: "vitamins" },
   { name: "Elderly Support Supplements", categoryId: "elderly_support_supplements", parentCategoryName: "Vitamins", parentCategoryId: "vitamins" },
+  { name: "Bone and joint pain", categoryId: "bone_and_joint_pain", parentCategoryName: "Vitamins", parentCategoryId: "vitamins" },
+  { name: "vitamins and supplements", categoryId: "vitamins_and_supplements", parentCategoryName: "Vitamins", parentCategoryId: "vitamins" },
 
   // Protein & Fitness
   { name: "Whey Protein", categoryId: "whey_protein", parentCategoryName: "Protein & Fitness", parentCategoryId: "protein_fitness" },
@@ -21,6 +23,8 @@ export const wellnessNutritionLevelThree = [
   { name: "Turmeric Tablets", categoryId: "turmeric_tablets", parentCategoryName: "Herbal Supplements", parentCategoryId: "herbal_supplements" },
   { name: "Ginger Extracts", categoryId: "ginger_extracts", parentCategoryName: "Herbal Supplements", parentCategoryId: "herbal_supplements" },
   { name: "Neem Capsules", categoryId: "neem_capsules", parentCategoryName: "Herbal Supplements", parentCategoryId: "herbal_supplements" },
+  { name: "Ayurvedic", categoryId: "ayurvedic", parentCategoryName: "Herbal Supplements", parentCategoryId: "herbal_supplements" },
+  { name: "Homeopathy", categoryId: "homeopathy", parentCategoryName: "Herbal Supplements", parentCategoryId: "herbal_supplements" },
 
   // Weight Management
   { name: "Fat Burners", categoryId: "fat_burners", parentCategoryName: "Weight Management", parentCategoryId: "weight_management" },
